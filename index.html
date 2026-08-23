@@ -39,6 +39,10 @@
     .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; }
     .btn-primary { width: 100%; padding: 12px; background: #1a237e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .btn-secondary { width: 100%; padding: 10px; background: #607d8b; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+    .btn-change-password { width: 100%; padding: 10px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+    
+    .change-password-form { background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; border: 1px solid #ff9800; }
+    .change-password-form h4 { color: #e65100; margin-bottom: 10px; }
     
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-content { background: white; padding: 20px; border-radius: 10px; width: 85%; max-width: 300px; text-align: center; }
@@ -84,6 +88,8 @@
     <!-- Panel Admin -->
     <div class="admin-panel" id="admin-panel">
       <h3>🔐 Panel de Administración</h3>
+      
+      <!-- Agregar Producto -->
       <div class="form-group">
         <label>Tipo:</label>
         <select id="tipo-producto">
@@ -100,6 +106,28 @@
         <input type="number" id="precio-producto" placeholder="Ej: 500">
       </div>
       <button class="btn-primary" onclick="agregarProducto()">💾 Guardar Producto</button>
+      
+      <!-- Cambiar Contraseña -->
+      <button class="btn-change-password" onclick="mostrarFormularioPassword()">🔑 Cambiar Contraseña</button>
+      
+      <div class="change-password-form" id="form-cambiar-password">
+        <h4>Cambiar Contraseña</h4>
+        <div class="form-group">
+          <label>Contraseña Actual:</label>
+          <input type="password" id="password-actual" placeholder="Contraseña actual">
+        </div>
+        <div class="form-group">
+          <label>Nueva Contraseña:</label>
+          <input type="password" id="password-nueva" placeholder="Nueva contraseña">
+        </div>
+        <div class="form-group">
+          <label>Confirmar Nueva Contraseña:</label>
+          <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña">
+        </div>
+        <button class="btn-primary" onclick="cambiarPassword()">✅ Guardar Nueva Contraseña</button>
+        <button class="btn-secondary" onclick="ocultarFormularioPassword()">Cancelar</button>
+      </div>
+      
       <button class="btn-secondary" onclick="cerrarAdmin()">Salir de Admin</button>
     </div>
 
@@ -123,9 +151,14 @@
     // ============================================
     // CONFIGURACIÓN
     // ============================================
-    const PASSWORD_ADMIN = "1234";
     let productos = [];
     let esAdmin = false;
+
+    // Obtener contraseña guardada o usar la default
+    function obtenerPassword() {
+      const passGuardada = localStorage.getItem('password_admin');
+      return passGuardada || "1234";
+    }
 
     // ============================================
     // CARGAR PRODUCTOS
@@ -255,7 +288,7 @@
     }
 
     // ============================================
-    // ADMIN
+    // ADMIN - LOGIN
     // ============================================
     function abrirModal() {
       document.getElementById('modal-password').style.display = 'flex';
@@ -268,20 +301,68 @@
     
     function verificarPassword() {
       const password = document.getElementById('password-input').value;
-      if (password === PASSWORD_ADMIN) {
+      const passwordCorrecta = obtenerPassword();
+      
+      if (password === passwordCorrecta) {
         esAdmin = true;
         document.getElementById('admin-panel').style.display = 'block';
         cerrarModal();
         mostrarProductos();
       } else {
-        alert('Contraseña incorrecta');
+        alert('❌ Contraseña incorrecta');
       }
     }
     
     function cerrarAdmin() {
       esAdmin = false;
       document.getElementById('admin-panel').style.display = 'none';
+      ocultarFormularioPassword();
       mostrarProductos();
+    }
+
+    // ============================================
+    // CAMBIAR CONTRASEÑA
+    // ============================================
+    function mostrarFormularioPassword() {
+      document.getElementById('form-cambiar-password').style.display = 'block';
+      document.getElementById('password-actual').value = '';
+      document.getElementById('password-nueva').value = '';
+      document.getElementById('password-confirmar').value = '';
+    }
+    
+    function ocultarFormularioPassword() {
+      document.getElementById('form-cambiar-password').style.display = 'none';
+    }
+    
+    function cambiarPassword() {
+      const passwordActual = document.getElementById('password-actual').value;
+      const passwordNueva = document.getElementById('password-nueva').value;
+      const passwordConfirmar = document.getElementById('password-confirmar').value;
+      const passwordGuardada = obtenerPassword();
+      
+      // Verificar contraseña actual
+      if (passwordActual !== passwordGuardada) {
+        alert('❌ La contraseña actual es incorrecta');
+        return;
+      }
+      
+      // Verificar que la nueva contraseña no esté vacía
+      if (!passwordNueva || passwordNueva.length < 4) {
+        alert('❌ La nueva contraseña debe tener al menos 4 caracteres');
+        return;
+      }
+      
+      // Verificar que coincidan
+      if (passwordNueva !== passwordConfirmar) {
+        alert('❌ Las contraseñas no coinciden');
+        return;
+      }
+      
+      // Guardar nueva contraseña
+      localStorage.setItem('password_admin', passwordNueva);
+      
+      alert('✅ Contraseña cambiada correctamente');
+      ocultarFormularioPassword();
     }
 
     // ============================================
