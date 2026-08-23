@@ -3,56 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Cima - Restaurante & Tienda</title>
+  <title>La Cima - Restaurante</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-    body { background: #f5f5f5; color: #333; }
-    header { background: #1a237e; color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; }
-    header h1 { font-size: 1.5rem; margin-bottom: 5px; }
-    header p { font-size: 0.9rem; opacity: 0.9; }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f5f5f5; }
+    header { background: #1a237e; color: white; padding: 15px; text-align: center; }
     .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-    
-    .tabs { display: flex; gap: 10px; margin: 15px 0; }
-    .tab { flex: 1; padding: 12px; text-align: center; background: white; border: 2px solid #1a237e; border-radius: 8px; cursor: pointer; font-weight: bold; color: #1a237e; }
-    .tab.active { background: #1a237e; color: white; }
-    
-    .section { margin: 15px 0; }
-    .section-title { font-size: 1.2rem; color: #1a237e; margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #1a237e; }
-    
-    .card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
-    .card-info { flex: 1; }
-    .card-name { font-weight: bold; font-size: 1rem; }
-    .card-price { color: #2e7d32; font-weight: bold; font-size: 1.1rem; }
-    .btn-delete { background: #e53935; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: none; }
-    
-    .actions { display: flex; gap: 10px; margin: 20px 0; }
-    .btn-whatsapp { flex: 1; padding: 15px; text-align: center; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-    .btn-order { background: #25d366; }
-    .btn-reserve { background: #0288d1; }
-    
-    .admin-panel { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .admin-panel h3 { color: #1a237e; margin-bottom: 15px; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 3px; }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; }
-    .btn-primary { width: 100%; padding: 12px; background: #1a237e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .btn-secondary { width: 100%; padding: 10px; background: #607d8b; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; }
-    .btn-change-password { width: 100%; padding: 10px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
-    
-    .change-password-form { background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; border: 1px solid #ff9800; }
-    .change-password-form h4 { color: #e65100; margin-bottom: 10px; }
-    
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 85%; max-width: 300px; text-align: center; }
-    .modal-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; text-align: center; }
-    
-    .admin-access { text-align: center; margin-top: 30px; }
-    .admin-access button { background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
-    
-    .empty-msg { text-align: center; color: #999; padding: 20px; font-style: italic; }
-    .loading-msg { text-align: center; color: #1a237e; padding: 20px; font-weight: bold; }
+    .tab { display: flex; gap: 10px; margin: 15px 0; }
+    .tab button { flex: 1; padding: 12px; border: 2px solid #1a237e; background: white; color: #1a237e; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .tab button.active { background: #1a237e; color: white; }
+    .card { background: white; padding: 15px; border-radius: 10px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card-name { font-weight: bold; }
+    .card-price { color: #2e7d32; font-weight: bold; }
+    .btn-delete { background: #e53935; color: white; border: none; padding: 5px 10px; border-radius: 50%; cursor: pointer; display: none; }
+    .admin-panel { background: white; padding: 15px; border-radius: 10px; display: none; margin: 15px 0; }
+    .admin-panel input, .admin-panel select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin: 5px 0; }
+    .btn-primary { background: #1a237e; color: white; }
+    .btn-danger { background: #e53935; color: white; }
+    .btn-warning { background: #ff9800; color: white; }
+    .btn-success { background: #25d366; color: white; }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
+    .modal-box { background: white; padding: 20px; border-radius: 10px; width: 85%; max-width: 300px; }
+    .modal-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+    .admin-link { text-align: center; margin-top: 20px; }
+    .admin-link a { color: #999; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -62,368 +37,226 @@
   </header>
 
   <div class="container">
-    <!-- Botones de acción -->
-    <div class="actions">
-      <a href="https://wa.me/5356626475?text=Hola,%20quisiera%20hacer%20un%20pedido" class="btn-whatsapp btn-order">🛵 Hacer Pedido</a>
-      <a href="https://wa.me/5356626475?text=Hola,%20quisiera%20reservar%20una%20mesa" class="btn-whatsapp btn-reserve">📅 Reservar Mesa</a>
+    <!-- Botones -->
+    <div style="display: flex; gap: 10px; margin: 15px 0;">
+      <a href="https://wa.me/5356626475?text=Hola%20quisiera%20hacer%20un%20pedido" style="flex:1; text-align:center; padding:15px; background:#25d366; color:white; text-decoration:none; border-radius:8px; font-weight:bold;">🛵 Pedido</a>
+      <a href="https://wa.me/5356626475?text=Hola%20quisiera%20reservar%20una%20mesa" style="flex:1; text-align:center; padding:15px; background:#0288d1; color:white; text-decoration:none; border-radius:8px; font-weight:bold;">📅 Reservar</a>
     </div>
 
     <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab active" onclick="cambiarTab('restaurante')">🍔 Restaurante</div>
-      <div class="tab" onclick="cambiarTab('tienda')">🛒 Tienda</div>
+    <div class="tab">
+      <button id="tab-rest" class="active" onclick="cambiarTab('restaurante')">🍔 Restaurante</button>
+      <button id="tab-tienda" onclick="cambiarTab('tienda')">🛒 Tienda</button>
     </div>
 
-    <!-- Restaurante -->
-    <div class="section" id="seccion-restaurante">
-      <div class="section-title">Platillos del Restaurante</div>
-      <div id="lista-restaurante"><div class="loading-msg">Cargando productos...</div></div>
-    </div>
-
-    <!-- Tienda -->
-    <div class="section" id="seccion-tienda" style="display:none;">
-      <div class="section-title">Productos de la Tienda</div>
-      <div id="lista-tienda"><div class="loading-msg">Cargando productos...</div></div>
-    </div>
+    <!-- Listas -->
+    <div id="lista-restaurante"></div>
+    <div id="lista-tienda" style="display:none;"></div>
 
     <!-- Panel Admin -->
-    <div class="admin-panel" id="admin-panel">
-      <h3>🔐 Panel de Administración</h3>
-      
-      <!-- Agregar Producto -->
-      <div class="form-group">
-        <label>Tipo:</label>
-        <select id="tipo-producto">
-          <option value="restaurante">🍔 Restaurante</option>
-          <option value="tienda">🛒 Tienda</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Nombre:</label>
-        <input type="text" id="nombre-producto" placeholder="Ej: Hamburguesa / Refresco">
-      </div>
-      <div class="form-group">
-        <label>Precio ($):</label>
-        <input type="number" id="precio-producto" placeholder="Ej: 500">
-      </div>
-      <button class="btn-primary" id="btn-guardar" onclick="agregarProducto()">💾 Guardar Producto</button>
-      
-      <!-- Cambiar Contraseña -->
-      <button class="btn-change-password" onclick="mostrarFormularioPassword()">🔑 Cambiar Contraseña</button>
-      
-      <div class="change-password-form" id="form-cambiar-password">
-        <h4>Cambiar Contraseña</h4>
-        <div class="form-group">
-          <label>Contraseña Actual:</label>
-          <input type="password" id="password-actual" placeholder="Contraseña actual">
-        </div>
-        <div class="form-group">
-          <label>Nueva Contraseña:</label>
-          <input type="password" id="password-nueva" placeholder="Nueva contraseña">
-        </div>
-        <div class="form-group">
-          <label>Confirmar Nueva Contraseña:</label>
-          <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña">
-        </div>
-        <button class="btn-primary" onclick="cambiarPassword()">✅ Guardar Nueva Contraseña</button>
-        <button class="btn-secondary" onclick="ocultarFormularioPassword()">Cancelar</button>
-      </div>
-      
-      <button class="btn-secondary" onclick="cerrarAdmin()">Salir de Admin</button>
+    <div class="admin-panel" id="panel-admin">
+      <h3>🔐 Admin</h3>
+      <select id="tipo">
+        <option value="restaurante">🍔 Restaurante</option>
+        <option value="tienda">🛒 Tienda</option>
+      </select>
+      <input type="text" id="nombre" placeholder="Nombre del producto">
+      <input type="number" id="precio" placeholder="Precio">
+      <button class="btn btn-primary" onclick="guardar()">💾 Guardar</button>
+      <button class="btn btn-warning" onclick="cambiarPass()">🔑 Cambiar Contraseña</button>
+      <button class="btn btn-danger" onclick="cerrarAdmin()">Salir</button>
     </div>
 
-    <!-- Acceso Admin -->
-    <div class="admin-access">
-      <button onclick="abrirModal()">🔑 Acceso Administrador</button>
+    <!-- Link Admin -->
+    <div class="admin-link">
+      <a href="#" onclick="abrirLogin()">🔑 Acceso Admin</a>
     </div>
   </div>
 
-  <!-- Modal Contraseña -->
-  <div class="modal" id="modal-password">
-    <div class="modal-content">
-      <h3>Acceso Admin</h3>
-      <input type="password" id="password-input" placeholder="Contraseña">
-      <button class="btn-primary" onclick="verificarPassword()">Entrar</button>
-      <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+  <!-- Modal Login -->
+  <div class="modal" id="modal-login">
+    <div class="modal-box">
+      <h3>Contraseña</h3>
+      <input type="password" id="pass-input" placeholder="Contraseña">
+      <button class="btn btn-primary" onclick="login()">Entrar</button>
+      <button class="btn btn-danger" onclick="cerrarLogin()">Cancelar</button>
     </div>
   </div>
 
   <script>
-    // ============================================
-    // CONFIGURACIÓN
-    // ============================================
+    const GITHUB_TOKEN = "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";
     const GITHUB_USER = "iverdr9009-droid";
     const GITHUB_REPO = "la-cima-restaurante";
-    const GITHUB_TOKEN = "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";
-    const GITHUB_FILE = "productos.json";
-    
-    const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${GITHUB_FILE}`;
-    const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/productos.json`;
+    const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/productos.json`;
     
     let productos = [];
     let esAdmin = false;
 
-    // ============================================
-    // OBTENER PASSWORD
-    // ============================================
-    function obtenerPassword() {
-      const passGuardada = localStorage.getItem('password_admin');
-      return passGuardada || "1234";
+    function cargar() {
+      fetch(RAW_URL + '?t=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+          productos = data || [];
+          mostrar();
+        })
+        .catch(err => {
+          console.log('Error:', err);
+          document.getElementById('lista-restaurante').innerHTML = '<p style="text-align:center;color:#999;">No hay productos</p>';
+          document.getElementById('lista-tienda').innerHTML = '<p style="text-align:center;color:#999;">No hay productos</p>';
+        });
     }
 
-    // ============================================
-    // CARGAR PRODUCTOS DESDE GITHUB
-    // ============================================
-    async function cargarProductos() {
-      try {
-        const respuesta = await fetch(RAW_URL + '?t=' + Date.now());
-        if (!respuesta.ok) throw new Error('Error al cargar');
-        productos = await respuesta.json();
-        mostrarProductos();
-      } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('lista-restaurante').innerHTML = '<div class="empty-msg">Error al cargar productos</div>';
-        document.getElementById('lista-tienda').innerHTML = '<div class="empty-msg">Error al cargar productos</div>';
-      }
-    }
-
-    // ============================================
-    // MOSTRAR PRODUCTOS
-    // ============================================
-    function mostrarProductos() {
-      const listaRestaurante = document.getElementById('lista-restaurante');
-      const listaTienda = document.getElementById('lista-tienda');
-      
-      listaRestaurante.innerHTML = '';
-      listaTienda.innerHTML = '';
-      
-      let hayRestaurante = false;
-      let hayTienda = false;
+    function mostrar() {
+      const listaR = document.getElementById('lista-restaurante');
+      const listaT = document.getElementById('lista-tienda');
+      listaR.innerHTML = '';
+      listaT.innerHTML = '';
       
       productos.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <div class="card-info">
+          <div>
             <div class="card-name">${p.nombre}</div>
             <div class="card-price">$${p.precio}</div>
           </div>
-          <button class="btn-delete" onclick="eliminarProducto('${p.id}')" style="${esAdmin ? 'display:block;' : 'display:none;'}">✕</button>
+          ${esAdmin ? `<button class="btn-delete" style="display:block;" onclick="eliminar('${p.id}')">✕</button>` : ''}
         `;
         
-        if (p.tipo === 'restaurante') {
-          listaRestaurante.appendChild(card);
-          hayRestaurante = true;
+        if (p.tipo === 'tienda') {
+          listaT.appendChild(card);
         } else {
-          listaTienda.appendChild(card);
-          hayTienda = true;
+          listaR.appendChild(card);
         }
       });
       
-      if (!hayRestaurante) {
-        listaRestaurante.innerHTML = '<div class="empty-msg">No hay platillos disponibles</div>';
-      }
-      if (!hayTienda) {
-        listaTienda.innerHTML = '<div class="empty-msg">No hay productos disponibles</div>';
-      }
+      if (listaR.innerHTML === '') listaR.innerHTML = '<p style="text-align:center;color:#999;">No hay platillos</p>';
+      if (listaT.innerHTML === '') listaT.innerHTML = '<p style="text-align:center;color:#999;">No hay productos</p>';
     }
 
-    // ============================================
-    // AGREGAR PRODUCTO
-    // ============================================
-    async function agregarProducto() {
-      const tipo = document.getElementById('tipo-producto').value;
-      const nombre = document.getElementById('nombre-producto').value.trim();
-      const precio = document.getElementById('precio-producto').value.trim();
+    function guardar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const precio = document.getElementById('precio').value.trim();
+      const tipo = document.getElementById('tipo').value;
       
       if (!nombre || !precio) {
         alert('Completa nombre y precio');
         return;
       }
       
-      const btn = document.getElementById('btn-guardar');
-      btn.innerText = 'Guardando...';
-      btn.disabled = true;
-      
-      const nuevoProducto = {
+      const nuevo = {
         id: Date.now(),
         nombre: nombre,
         precio: precio,
         tipo: tipo
       };
       
-      productos.push(nuevoProducto);
+      productos.push(nuevo);
       
-      try {
-        await guardarEnGithub();
-        mostrarProductos();
-        document.getElementById('nombre-producto').value = '';
-        document.getElementById('precio-producto').value = '';
-        alert('✅ Producto guardado correctamente');
-      } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al guardar en internet');
-        productos.pop();
-      }
+      guardarEnGithub();
       
-      btn.innerText = '💾 Guardar Producto';
-      btn.disabled = false;
+      document.getElementById('nombre').value = '';
+      document.getElementById('precio').value = '';
+      mostrar();
+      alert('✅ Guardado');
     }
 
-    // ============================================
-    // ELIMINAR PRODUCTO
-    // ============================================
-    async function eliminarProducto(id) {
-      if (!confirm('¿Eliminar este producto?')) return;
-      
+    function eliminar(id) {
+      if (!confirm('¿Eliminar?')) return;
       productos = productos.filter(p => p.id != id);
-      
-      try {
-        await guardarEnGithub();
-        mostrarProductos();
-      } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al eliminar');
-      }
+      guardarEnGithub();
+      mostrar();
     }
 
-    // ============================================
-    // GUARDAR EN GITHUB
-    // ============================================
-    async function guardarEnGithub() {
-      const respuesta = await fetch(API_URL, {
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`
+    function guardarEnGithub() {
+      // Primero obtener SHA
+      fetch(API_URL, {
+        headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+      })
+      .then(r => r.json())
+      .then(data => {
+        const sha = data.sha;
+        const contenido = JSON.stringify(productos);
+        const base64 = btoa(unescape(encodeURIComponent(contenido)));
+        
+        return fetch(API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'token ' + GITHUB_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'Update productos',
+            content: base64,
+            sha: sha
+          })
+        });
+      })
+      .then(r => {
+        if (!r.ok) {
+          alert('Error al guardar en internet');
         }
+      })
+      .catch(err => {
+        console.log('Error:', err);
+        alert('Error de conexión');
       });
-      
-      if (!respuesta.ok) {
-        throw new Error('Error al obtener archivo');
-      }
-      
-      const datos = await respuesta.json();
-      const sha = datos.sha;
-      
-      const contenido = JSON.stringify(productos, null, 2);
-      const base64 = btoa(unescape(encodeURIComponent(contenido)));
-      
-      const actualizar = await fetch(API_URL, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'Actualizar productos',
-          content: base64,
-          sha: sha
-        })
-      });
-      
-      if (!actualizar.ok) {
-        throw new Error('Error al actualizar');
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
-    // ============================================
-    // CAMBIAR TAB
-    // ============================================
     function cambiarTab(tab) {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(t => t.classList.remove('active'));
-      
       if (tab === 'restaurante') {
-        tabs[0].classList.add('active');
-        document.getElementById('seccion-restaurante').style.display = 'block';
-        document.getElementById('seccion-tienda').style.display = 'none';
+        document.getElementById('tab-rest').classList.add('active');
+        document.getElementById('tab-tienda').classList.remove('active');
+        document.getElementById('lista-restaurante').style.display = 'block';
+        document.getElementById('lista-tienda').style.display = 'none';
       } else {
-        tabs[1].classList.add('active');
-        document.getElementById('seccion-restaurante').style.display = 'none';
-        document.getElementById('seccion-tienda').style.display = 'block';
+        document.getElementById('tab-tienda').classList.add('active');
+        document.getElementById('tab-rest').classList.remove('active');
+        document.getElementById('lista-restaurante').style.display = 'none';
+        document.getElementById('lista-tienda').style.display = 'block';
       }
     }
 
-    // ============================================
-    // ADMIN - LOGIN
-    // ============================================
-    function abrirModal() {
-      document.getElementById('modal-password').style.display = 'flex';
-      document.getElementById('password-input').value = '';
+    function abrirLogin() {
+      document.getElementById('modal-login').style.display = 'flex';
     }
     
-    function cerrarModal() {
-      document.getElementById('modal-password').style.display = 'none';
+    function cerrarLogin() {
+      document.getElementById('modal-login').style.display = 'none';
     }
     
-    function verificarPassword() {
-      const password = document.getElementById('password-input').value;
-      const passwordCorrecta = obtenerPassword();
+    function login() {
+      const pass = document.getElementById('pass-input').value;
+      const correcta = localStorage.getItem('pass_admin') || '1234';
       
-      if (password === passwordCorrecta) {
+      if (pass === correcta) {
         esAdmin = true;
-        document.getElementById('admin-panel').style.display = 'block';
-        cerrarModal();
-        mostrarProductos();
+        document.getElementById('panel-admin').style.display = 'block';
+        cerrarLogin();
+        mostrar();
       } else {
-        alert('❌ Contraseña incorrecta');
+        alert('Contraseña incorrecta');
       }
     }
     
     function cerrarAdmin() {
       esAdmin = false;
-      document.getElementById('admin-panel').style.display = 'none';
-      ocultarFormularioPassword();
-      mostrarProductos();
-    }
-
-    // ============================================
-    // CAMBIAR CONTRASEÑA
-    // ============================================
-    function mostrarFormularioPassword() {
-      document.getElementById('form-cambiar-password').style.display = 'block';
-      document.getElementById('password-actual').value = '';
-      document.getElementById('password-nueva').value = '';
-      document.getElementById('password-confirmar').value = '';
+      document.getElementById('panel-admin').style.display = 'none';
+      mostrar();
     }
     
-    function ocultarFormularioPassword() {
-      document.getElementById('form-cambiar-password').style.display = 'none';
-    }
-    
-    function cambiarPassword() {
-      const passwordActual = document.getElementById('password-actual').value;
-      const passwordNueva = document.getElementById('password-nueva').value;
-      const passwordConfirmar = document.getElementById('password-confirmar').value;
-      const passwordGuardada = obtenerPassword();
-      
-      if (passwordActual !== passwordGuardada) {
-        alert('❌ La contraseña actual es incorrecta');
-        return;
+    function cambiarPass() {
+      const nueva = prompt('Nueva contraseña (mínimo 4):');
+      if (nueva && nueva.length >= 4) {
+        localStorage.setItem('pass_admin', nueva);
+        alert('✅ Contraseña cambiada');
+      } else {
+        alert('❌ Contraseña muy corta');
       }
-      
-      if (!passwordNueva || passwordNueva.length < 4) {
-        alert('❌ La nueva contraseña debe tener al menos 4 caracteres');
-        return;
-      }
-      
-      if (passwordNueva !== passwordConfirmar) {
-        alert('❌ Las contraseñas no coinciden');
-        return;
-      }
-      
-      localStorage.setItem('password_admin', passwordNueva);
-      alert('✅ Contraseña cambiada correctamente');
-      ocultarFormularioPassword();
     }
 
-    // ============================================
-    // INICIAR
-    // ============================================
-    window.onload = function() {
-      cargarProductos();
-    };
+    cargar();
   </script>
 </body>
 </html>
