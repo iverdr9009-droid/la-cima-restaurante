@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Cima - Restaurante & Tienda</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: #f5f5f5; color: #333; }
+    header { background: #1a237e; color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; }
+    header h1 { font-size: 1.5rem; margin-bottom: 5px; }
+    header p { font-size: 0.9rem; opacity: 0.9; }
+    
+    .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+    
+    .tabs { display: flex; gap: 10px; margin: 15px 0; }
+    .tab { flex: 1; padding: 12px; text-align: center; background: white; border: 2px solid #1a237e; border-radius: 8px; cursor: pointer; font-weight: bold; color: #1a237e; }
+    .tab.active { background: #1a237e; color: white; }
+    
+    .section { margin: 15px 0; }
+    .section-title { font-size: 1.2rem; color: #1a237e; margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #1a237e; }
+    
+    .card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+    .card-info { flex: 1; }
+    .card-name { font-weight: bold; font-size: 1rem; }
+    .card-price { color: #2e7d32; font-weight: bold; font-size: 1.1rem; }
+    .btn-delete { background: #e53935; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: none; }
+    
+    .actions { display: flex; gap: 10px; margin: 20px 0; }
+    .btn-whatsapp { flex: 1; padding: 15px; text-align: center; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+    .btn-order { background: #25d366; }
+    .btn-reserve { background: #0288d1; }
+    
+    .admin-panel { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .admin-panel h3 { color: #1a237e; margin-bottom: 15px; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 3px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; }
+    .btn-primary { width: 100%; padding: 12px; background: #1a237e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-secondary { width: 100%; padding: 10px; background: #607d8b; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+    
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 85%; max-width: 300px; text-align: center; }
+    .modal-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; text-align: center; }
+    
+    .admin-access { text-align: center; margin-top: 30px; }
+    .admin-access button { background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
+    
+    .empty-msg { text-align: center; color: #999; padding: 20px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>La Cima</h1>
+    <p>Restaurante & Tienda</p>
+  </header>
+
+  <div class="container">
+    <!-- Botones de acción -->
+    <div class="actions">
+      <a href="https://wa.me/5356626475?text=Hola,%20quisiera%20hacer%20un%20pedido" class="btn-whatsapp btn-order">🛵 Hacer Pedido</a>
+      <a href="https://wa.me/5356626475?text=Hola,%20quisiera%20reservar%20una%20mesa" class="btn-whatsapp btn-reserve">📅 Reservar Mesa</a>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="cambiarTab('restaurante')">🍔 Restaurante</div>
+      <div class="tab" onclick="cambiarTab('tienda')">🛒 Tienda</div>
+    </div>
+
+    <!-- Restaurante -->
+    <div class="section" id="seccion-restaurante">
+      <div class="section-title">Platillos del Restaurante</div>
+      <div id="lista-restaurante"><div class="empty-msg">Cargando...</div></div>
+    </div>
+
+    <!-- Tienda -->
+    <div class="section" id="seccion-tienda" style="display:none;">
+      <div class="section-title">Productos de la Tienda</div>
+      <div id="lista-tienda"><div class="empty-msg">Cargando...</div></div>
+    </div>
+
+    <!-- Panel Admin -->
+    <div class="admin-panel" id="admin-panel">
+      <h3>🔐 Panel de Administración</h3>
+      <div class="form-group">
+        <label>Tipo:</label>
+        <select id="tipo-producto">
+          <option value="restaurante">🍔 Restaurante</option>
+          <option value="tienda">🛒 Tienda</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" id="nombre-producto" placeholder="Ej: Hamburguesa / Refresco">
+      </div>
+      <div class="form-group">
+        <label>Precio ($):</label>
+        <input type="number" id="precio-producto" placeholder="Ej: 500">
+      </div>
+      <button class="btn-primary" onclick="agregarProducto()">💾 Guardar Producto</button>
+      <button class="btn-secondary" onclick="cerrarAdmin()">Salir de Admin</button>
+    </div>
+
+    <!-- Acceso Admin -->
+    <div class="admin-access">
+      <button onclick="abrirModal()">🔑 Acceso Administrador</button>
+    </div>
+  </div>
+
+  <!-- Modal Contraseña -->
+  <div class="modal" id="modal-password">
+    <div class="modal-content">
+      <h3>Acceso Admin</h3>
+      <input type="password" id="password-input" placeholder="Contraseña">
+      <button class="btn-primary" onclick="verificarPassword()">Entrar</button>
+      <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // CONFIGURACIÓN
+    // ============================================
+    const PASSWORD_ADMIN = "1234";
+    let productos = [];
+    let esAdmin = false;
+
+    // ============================================
+    // CARGAR PRODUCTOS
+    // ============================================
+    function cargarProductos() {
+      const datos = localStorage.getItem('productos_la_cima');
+      if (datos) {
+        productos = JSON.parse(datos);
+      } else {
+        // Productos de ejemplo
+        productos = [
+          { id: 1, nombre: "Pizza Margarita", precio: "800", tipo: "restaurante" },
+          { id: 2, nombre: "Hamburguesa Clásica", precio: "500", tipo: "restaurante" },
+          { id: 3, nombre: "Refresco Cola", precio: "150", tipo: "tienda" },
+          { id: 4, nombre: "Agua Mineral", precio: "100", tipo: "tienda" }
+        ];
+        guardarProductos();
+      }
+      mostrarProductos();
+    }
+
+    // ============================================
+    // GUARDAR PRODUCTOS
+    // ============================================
+    function guardarProductos() {
+      localStorage.setItem('productos_la_cima', JSON.stringify(productos));
+    }
+
+    // ============================================
+    // MOSTRAR PRODUCTOS
+    // ============================================
+    function mostrarProductos() {
+      const listaRestaurante = document.getElementById('lista-restaurante');
+      const listaTienda = document.getElementById('lista-tienda');
+      
+      listaRestaurante.innerHTML = '';
+      listaTienda.innerHTML = '';
+      
+      let hayRestaurante = false;
+      let hayTienda = false;
+      
+      productos.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-info">
+            <div class="card-name">${p.nombre}</div>
+            <div class="card-price">$${p.precio}</div>
+          </div>
+          <button class="btn-delete" onclick="eliminarProducto('${p.id}')" style="${esAdmin ? 'display:block;' : 'display:none;'}">✕</button>
+        `;
+        
+        if (p.tipo === 'restaurante') {
+          listaRestaurante.appendChild(card);
+          hayRestaurante = true;
+        } else {
+          listaTienda.appendChild(card);
+          hayTienda = true;
+        }
+      });
+      
+      if (!hayRestaurante) {
+        listaRestaurante.innerHTML = '<div class="empty-msg">No hay platillos disponibles</div>';
+      }
+      if (!hayTienda) {
+        listaTienda.innerHTML = '<div class="empty-msg">No hay productos disponibles</div>';
+      }
+    }
+
+    // ============================================
+    // AGREGAR PRODUCTO
+    // ============================================
+    function agregarProducto() {
+      const tipo = document.getElementById('tipo-producto').value;
+      const nombre = document.getElementById('nombre-producto').value.trim();
+      const precio = document.getElementById('precio-producto').value.trim();
+      
+      if (!nombre || !precio) {
+        alert('Completa nombre y precio');
+        return;
+      }
+      
+      const nuevoProducto = {
+        id: Date.now(),
+        nombre: nombre,
+        precio: precio,
+        tipo: tipo
+      };
+      
+      productos.push(nuevoProducto);
+      guardarProductos();
+      mostrarProductos();
+      
+      document.getElementById('nombre-producto').value = '';
+      document.getElementById('precio-producto').value = '';
+      
+      alert('✅ Producto guardado correctamente');
+    }
+
+    // ============================================
+    // ELIMINAR PRODUCTO
+    // ============================================
+    function eliminarProducto(id) {
+      if (!confirm('¿Eliminar este producto?')) return;
+      
+      productos = productos.filter(p => p.id != id);
+      guardarProductos();
+      mostrarProductos();
+    }
+
+    // ============================================
+    // CAMBIAR TAB
+    // ============================================
+    function cambiarTab(tab) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      
+      if (tab === 'restaurante') {
+        tabs[0].classList.add('active');
+        document.getElementById('seccion-restaurante').style.display = 'block';
+        document.getElementById('seccion-tienda').style.display = 'none';
+      } else {
+        tabs[1].classList.add('active');
+        document.getElementById('seccion-restaurante').style.display = 'none';
+        document.getElementById('seccion-tienda').style.display = 'block';
+      }
+    }
+
+    // ============================================
+    // ADMIN
+    // ============================================
+    function abrirModal() {
+      document.getElementById('modal-password').style.display = 'flex';
+      document.getElementById('password-input').value = '';
+    }
+    
+    function cerrarModal() {
+      document.getElementById('modal-password').style.display = 'none';
+    }
+    
+    function verificarPassword() {
+      const password = document.getElementById('password-input').value;
+      if (password === PASSWORD_ADMIN) {
+        esAdmin = true;
+        document.getElementById('admin-panel').style.display = 'block';
+        cerrarModal();
+        mostrarProductos();
+      } else {
+        alert('Contraseña incorrecta');
+      }
+    }
+    
+    function cerrarAdmin() {
+      esAdmin = false;
+      document.getElementById('admin-panel').style.display = 'none';
+      mostrarProductos();
+    }
+
+    // ============================================
+    // INICIAR
+    // ============================================
+    window.onload = function() {
+      cargarProductos();
+    };
+  </script>
+</body>
+</html>
