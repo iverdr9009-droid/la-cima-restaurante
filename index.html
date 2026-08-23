@@ -85,7 +85,7 @@
   </div>
 
   <script>
-    const GITHUB_TOKEN = "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";
+    const GITHUB_TOKEN = "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";
     const GITHUB_USER = "iverdr9009-droid";
     const GITHUB_REPO = "la-cima-restaurante";
     const API_URL = "https://api.github.com/repos/" + GITHUB_USER + "/" + GITHUB_REPO + "/contents/productos.json";
@@ -166,9 +166,15 @@
 
     function guardarEnGithub() {
       fetch(API_URL, {
-        headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+        headers: { 
+          'Authorization': 'Bearer ' + GITHUB_TOKEN,
+          'Accept': 'application/vnd.github.v3+json'
+        }
       })
-      .then(function(r) { return r.json(); })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Error al obtener archivo: ' + r.status);
+        return r.json();
+      })
       .then(function(data) {
         var sha = data.sha;
         var contenido = JSON.stringify(productos);
@@ -177,8 +183,9 @@
         return fetch(API_URL, {
           method: 'PUT',
           headers: {
-            'Authorization': 'token ' + GITHUB_TOKEN,
-            'Content-Type': 'application/json'
+            'Authorization': 'Bearer ' + GITHUB_TOKEN,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
           },
           body: JSON.stringify({
             message: 'Update productos',
@@ -188,15 +195,12 @@
         });
       })
       .then(function(r) {
-        if (!r.ok) {
-          alert('❌ Error al guardar');
-        } else {
-          console.log('✅ Guardado en GitHub');
-        }
+        if (!r.ok) throw new Error('Error al actualizar: ' + r.status);
+        console.log('✅ Guardado en GitHub correctamente');
       })
       .catch(function(err) {
         console.log('Error:', err);
-        alert('❌ Error de conexión');
+        alert('❌ Error al guardar en internet');
       });
     }
 
