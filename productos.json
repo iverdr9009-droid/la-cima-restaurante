@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nombre": "Pizza Margarita", "precio": "800", "tipo": "restaurante" },
+  { "id": 2, "nombre": "Hamburguesa Clásica", "precio": "500", "tipo": "restaurante" },
+  { "id": 3, "nombre": "Refresco Cola", "precio": "150", "tipo": "tienda" },
+  { "id": 4, "nombre": "Agua Mineral", "precio": "100", "tipo": "tienda" }
+]
