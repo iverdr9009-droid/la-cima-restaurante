@@ -52,6 +52,7 @@
     .admin-access button { background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
     
     .empty-msg { text-align: center; color: #999; padding: 20px; font-style: italic; }
+    .loading-msg { text-align: center; color: #1a237e; padding: 20px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -76,13 +77,13 @@
     <!-- Restaurante -->
     <div class="section" id="seccion-restaurante">
       <div class="section-title">Platillos del Restaurante</div>
-      <div id="lista-restaurante"><div class="empty-msg">Cargando...</div></div>
+      <div id="lista-restaurante"><div class="loading-msg">Cargando productos...</div></div>
     </div>
 
     <!-- Tienda -->
     <div class="section" id="seccion-tienda" style="display:none;">
       <div class="section-title">Productos de la Tienda</div>
-      <div id="lista-tienda"><div class="empty-msg">Cargando...</div></div>
+      <div id="lista-tienda"><div class="loading-msg">Cargando productos...</div></div>
     </div>
 
     <!-- Panel Admin -->
@@ -105,7 +106,7 @@
         <label>Precio ($):</label>
         <input type="number" id="precio-producto" placeholder="Ej: 500">
       </div>
-      <button class="btn-primary" onclick="agregarProducto()">💾 Guardar Producto</button>
+      <button class="btn-primary" id="btn-guardar" onclick="agregarProducto()">💾 Guardar Producto</button>
       
       <!-- Cambiar Contraseña -->
       <button class="btn-change-password" onclick="mostrarFormularioPassword()">🔑 Cambiar Contraseña</button>
@@ -151,40 +152,39 @@
     // ============================================
     // CONFIGURACIÓN
     // ============================================
+    const GITHUB_USER = "iverdr9009-droid";
+    const GITHUB_REPO = "la-cima-restaurante";
+    const GITHUB_TOKEN = "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";
+    const GITHUB_FILE = "productos.json";
+    
+    const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${GITHUB_FILE}`;
+    const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    
     let productos = [];
     let esAdmin = false;
 
-    // Obtener contraseña guardada o usar la default
+    // ============================================
+    // OBTENER PASSWORD
+    // ============================================
     function obtenerPassword() {
       const passGuardada = localStorage.getItem('password_admin');
       return passGuardada || "1234";
     }
 
     // ============================================
-    // CARGAR PRODUCTOS
+    // CARGAR PRODUCTOS DESDE GITHUB
     // ============================================
-    function cargarProductos() {
-      const datos = localStorage.getItem('productos_la_cima');
-      if (datos) {
-        productos = JSON.parse(datos);
-      } else {
-        // Productos de ejemplo
-        productos = [
-          { id: 1, nombre: "Pizza Margarita", precio: "800", tipo: "restaurante" },
-          { id: 2, nombre: "Hamburguesa Clásica", precio: "500", tipo: "restaurante" },
-          { id: 3, nombre: "Refresco Cola", precio: "150", tipo: "tienda" },
-          { id: 4, nombre: "Agua Mineral", precio: "100", tipo: "tienda" }
-        ];
-        guardarProductos();
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(RAW_URL + '?t=' + Date.now());
+        if (!respuesta.ok) throw new Error('Error al cargar');
+        productos = await respuesta.json();
+        mostrarProductos();
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('lista-restaurante').innerHTML = '<div class="empty-msg">Error al cargar productos</div>';
+        document.getElementById('lista-tienda').innerHTML = '<div class="empty-msg">Error al cargar productos</div>';
       }
-      mostrarProductos();
-    }
-
-    // ============================================
-    // GUARDAR PRODUCTOS
-    // ============================================
-    function guardarProductos() {
-      localStorage.setItem('productos_la_cima', JSON.stringify(productos));
     }
 
     // ============================================
@@ -231,7 +231,7 @@
     // ============================================
     // AGREGAR PRODUCTO
     // ============================================
-    function agregarProducto() {
+    async function agregarProducto() {
       const tipo = document.getElementById('tipo-producto').value;
       const nombre = document.getElementById('nombre-producto').value.trim();
       const precio = document.getElementById('precio-producto').value.trim();
@@ -241,6 +241,10 @@
         return;
       }
       
+      const btn = document.getElementById('btn-guardar');
+      btn.innerText = 'Guardando...';
+      btn.disabled = true;
+      
       const nuevoProducto = {
         id: Date.now(),
         nombre: nombre,
@@ -249,24 +253,78 @@
       };
       
       productos.push(nuevoProducto);
-      guardarProductos();
-      mostrarProductos();
       
-      document.getElementById('nombre-producto').value = '';
-      document.getElementById('precio-producto').value = '';
+      try {
+        await guardarEnGithub();
+        mostrarProductos();
+        document.getElementById('nombre-producto').value = '';
+        document.getElementById('precio-producto').value = '';
+        alert('✅ Producto guardado correctamente');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al guardar en internet');
+        productos.pop();
+      }
       
-      alert('✅ Producto guardado correctamente');
+      btn.innerText = '💾 Guardar Producto';
+      btn.disabled = false;
     }
 
     // ============================================
     // ELIMINAR PRODUCTO
     // ============================================
-    function eliminarProducto(id) {
+    async function eliminarProducto(id) {
       if (!confirm('¿Eliminar este producto?')) return;
       
       productos = productos.filter(p => p.id != id);
-      guardarProductos();
-      mostrarProductos();
+      
+      try {
+        await guardarEnGithub();
+        mostrarProductos();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al eliminar');
+      }
+    }
+
+    // ============================================
+    // GUARDAR EN GITHUB
+    // ============================================
+    async function guardarEnGithub() {
+      const respuesta = await fetch(API_URL, {
+        headers: {
+          'Authorization': `token ${GITHUB_TOKEN}`
+        }
+      });
+      
+      if (!respuesta.ok) {
+        throw new Error('Error al obtener archivo');
+      }
+      
+      const datos = await respuesta.json();
+      const sha = datos.sha;
+      
+      const contenido = JSON.stringify(productos, null, 2);
+      const base64 = btoa(unescape(encodeURIComponent(contenido)));
+      
+      const actualizar = await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Actualizar productos',
+          content: base64,
+          sha: sha
+        })
+      });
+      
+      if (!actualizar.ok) {
+        throw new Error('Error al actualizar');
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     // ============================================
@@ -340,27 +398,22 @@
       const passwordConfirmar = document.getElementById('password-confirmar').value;
       const passwordGuardada = obtenerPassword();
       
-      // Verificar contraseña actual
       if (passwordActual !== passwordGuardada) {
         alert('❌ La contraseña actual es incorrecta');
         return;
       }
       
-      // Verificar que la nueva contraseña no esté vacía
       if (!passwordNueva || passwordNueva.length < 4) {
         alert('❌ La nueva contraseña debe tener al menos 4 caracteres');
         return;
       }
       
-      // Verificar que coincidan
       if (passwordNueva !== passwordConfirmar) {
         alert('❌ Las contraseñas no coinciden');
         return;
       }
       
-      // Guardar nueva contraseña
       localStorage.setItem('password_admin', passwordNueva);
-      
       alert('✅ Contraseña cambiada correctamente');
       ocultarFormularioPassword();
     }
